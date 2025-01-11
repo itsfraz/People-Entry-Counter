@@ -3,23 +3,72 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="app.css">
-    <title>People count in Subway</title>
+    <title>Gate Entry Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 
 <body>
-    <div class="main">
-        <h1>People's Entery count in Subway :</h1>
-        <h2 id="count-el">0</h2>
-        <button id="increment-btn" onclick="increment()">Increment</button>
-        <button id="save-btn" onclick="save()">Save</button>
-        <p id="save-el"> Previous Entries : </p>
-    </div>
-    <script src="index.js">
-
-    </script>
+    <header>
+        <h1>Gate Entry Management System</h1>
+        <label class="switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="slider round">
+                <span class="sun-moon">
+                    <span class="sun">☀️</span>
+                    <span class="moon">🌙</span>
+                </span>
+            </span>
+        </label>
+    </header>
+    <main>
+        <section id="entry-form">
+            <form id="gateForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                
+                <label for="vehicle">Vehicle Number:</label>
+                <input type="text" id="vehicle" name="vehicle" placeholder="Enter vehicle number" required>
+                
+                <label for="purpose">Purpose:</label>
+                <input type="text" id="purpose" name="purpose" placeholder="Enter purpose" required>
+                
+                <label for="time">Entry Time:</label>
+                <input type="datetime-local" id="time" name="time" required>
+                
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+        <section id="entry-list">
+            <h2>Entries</h2>
+            <input type="text" id="search" placeholder="Search by name, vehicle, or date">
+            <p>Total Entries: <span id="entry-count">0</span></p>
+            <ul id="entries">
+                <!-- Entries will be dynamically added here -->
+            </ul>
+            <div id="pagination">
+                <button id="prev-page" disabled>Previous</button>
+                <span id="page-info">Page 1</span>
+                <button id="next-page">Next</button>
+            </div>
+            <button id="clear-entries">Clear All Entries</button>
+            <input type="file" id="import-entries" style="display: none;">
+            <label for="import-entries" class="import-label">Import Entries</label>
+        </section>
+        <section id="report-section">
+            <h2>Generate Reports</h2>
+            <button id="generate-daily-report-text">Generate Daily Report (Text)</button>
+            <button id="generate-daily-report-excel">Generate Daily Report (Excel)</button>
+            <button id="generate-monthly-report-text">Generate Monthly Report (Text)</button>
+            <button id="generate-monthly-report-excel">Generate Monthly Report (Excel)</button>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Entry Count</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 
 </html>
