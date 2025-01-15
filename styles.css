@@ -23,6 +23,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     animation: fadeIn 0.5s ease-in-out;
+    flex-wrap: wrap; /* Allow content to wrap on smaller screens */
 }
 #entries li:hover {
     transform: translateY(-5px);
@@ -35,6 +36,7 @@
     border-radius: 0.25rem;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+     margin-top: 0.5rem; /* Add some top margin for smaller screens */
 }
 
 #entries li button.edit {
@@ -215,16 +217,26 @@ input[type="text"]:hover, input[type="datetime-local"]:hover, #search:hover {
     margin-top: 1rem;
 }
 
+.report-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 0.5rem; /* Add gap between buttons */
+    width: 100%; /* Ensure buttons take up full width */
+    margin-bottom: 0.5rem; /* Add some spacing below the buttons */
+}
+
 #generate-daily-report-text, #generate-daily-report-excel, #generate-monthly-report-text, #generate-monthly-report-excel {
     background-color: #4f46e5;
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     text-align: center;
-    width: 100%;
-    max-width: 250px;
+    width: auto; /* Make buttons auto-sized */
+    max-width: 100%; /* Take up full width if needed */
     white-space: nowrap;
     transition: background-color 0.3s;
+    flex: 1 1 200px; /* Allow buttons to grow/shrink and set a base width */
 }
 
 #generate-daily-report-text:hover, #generate-daily-report-excel:hover, #generate-monthly-report-text:hover, #generate-monthly-report-excel:hover  {
@@ -382,4 +394,31 @@ body.dark-mode #year-select {
 }
 #report-section {
     margin-bottom: 4rem; /* Add margin to the bottom of the report section */
+}
+/* Responsive Styles Using Media Queries */
+@media (max-width: 768px) {
+    #entries li {
+        flex-direction: column; /* Stack content on smaller screens */
+        align-items: flex-start; /* Align content to the start */
+    }
+    
+    #entries li > * {
+        margin-bottom: 0.25rem; /* Add some spacing below the buttons */
+    }
+
+    #entries li button {
+         margin-left: 0;
+         margin-top: 0.25rem; /* Adjust top margin for smaller screens */
+         
+    }
+
+    .report-buttons{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #report-section  button{
+           width: 100%;
+           max-width: unset;
+    }
 }

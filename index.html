@@ -28,38 +28,49 @@
         <section id="entry-form" class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
             <form id="gateForm" class="flex flex-col gap-4">
                 <label for="name" class="font-medium">Name:</label>
-                <input type="text" id="name" name="name" placeholder="Enter Your Name" required class="border border-gray-300 rounded p-2">
-                
+                <input type="text" id="name" name="name" placeholder="Enter Your Name" required
+                    class="border border-gray-300 rounded p-2">
+
                 <label for="vehicle" class="font-medium">Vehicle Number:</label>
-                <input type="text" id="vehicle" name="vehicle" placeholder="Enter vehicle number | Format:AB12AB1234" required class="border border-gray-300 rounded p-2">
-                
+                <input type="text" id="vehicle" name="vehicle" placeholder="Enter vehicle number | Format:AB12AB1234"
+                    required class="border border-gray-300 rounded p-2">
+
                 <label for="purpose" class="font-medium">Purpose:</label>
-                <input type="text" id="purpose" name="purpose" placeholder="Enter Purpose" required class="border border-gray-300 rounded p-2">
-                
+                <input type="text" id="purpose" name="purpose" placeholder="Enter Purpose" required
+                    class="border border-gray-300 rounded p-2">
+
                 <label for="time" class="font-medium">Entry Time:</label>
-                <input type="datetime-local" id="time" name="time" required class="border border-gray-300 rounded p-2">
-                
+                <input type="datetime-local" id="time" name="time" required
+                    class="border border-gray-300 rounded p-2">
+
                 <button type="submit" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Submit</button>
             </form>
         </section>
         <section id="entry-list" class="mt-6 w-full max-w-md">
             <h2 class="text-xl font-semibold mb-4">Entries</h2>
-            <input type="text" id="search" placeholder="Search by name, vehicle, or date" class="border border-gray-300 rounded p-2 mb-4 w-full">
+            <input type="text" id="search" placeholder="Search by name, vehicle, or date"
+                class="border border-gray-300 rounded p-2 mb-4 w-full">
             <p class="font-medium">Total Entries: <span id="entry-count">0</span></p>
             <ul id="entries" class="list-disc pl-5">
                 <!-- Entries will be dynamically added here -->
             </ul>
             <div id="pagination" class="flex justify-center mt-4">
-                <button id="prev-page" disabled class="bg-gray-300 text-gray-800 rounded p-2 hover:bg-gray-400">Previous</button>
+                <button id="prev-page" disabled
+                    class="bg-gray-300 text-gray-800 rounded p-2 hover:bg-gray-400">Previous</button>
                 <span id="page-info" class="mx-2">Page 1</span>
                 <button id="next-page" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Next</button>
             </div>
-            <button id="clear-entries" class="bg-red-500 text-white rounded p-2 hover:bg-red-600 mt-4 mx-auto block">Clear All Entries</button>
+            <button id="clear-entries" class="bg-red-500 text-white rounded p-2 hover:bg-red-600 mt-4 mx-auto block">Clear
+                All Entries</button>
         </section>
         <section id="report-section" class="mt-6 w-full max-w-md">
             <h2 class="text-xl font-semibold mb-4">Generate Reports</h2>
-            <button id="generate-daily-report-text" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Daily Report (Text)</button>
-            <button id="generate-daily-report-excel" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 ml-2">Daily Report (Excel)</button>
+            <div class="report-buttons">
+                <button id="generate-daily-report-text"
+                    class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Daily Report (Text)</button>
+                <button id="generate-daily-report-excel"
+                    class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 ml-2">Daily Report (Excel)</button>
+            </div>
             <div class="mt-4">
                 <label for="month-select" class="block font-medium">Select Month:</label>
                 <select id="month-select" class="border border-gray-300 rounded p-2 w-full">
@@ -86,12 +97,18 @@
                     <option value="2025">2025</option>
                 </select>
             </div>
-            <button id="generate-monthly-report-text" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 mt-2">Monthly Report (Text)</button>
-            <button id="generate-monthly-report-excel" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 mt-2">Monthly Report (Excel)</button>
+            <div class="report-buttons">
+                <button id="generate-monthly-report-text"
+                    class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 mt-2">Monthly Report (Text)</button>
+                <button id="generate-monthly-report-excel"
+                    class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 mt-2">Monthly Report (Excel)</button>
+            </div>
         </section>
-        <footer id="footer" class="footer bg-gray-800 text-white p-4 text-center">
+        
+    </main>
+     <footer id="footer" class="footer bg-gray-800 text-white p-4 text-center mt-auto">
             <p>© 2023 Entry Count</p>
-        </footer>
+    </footer>
     <script src="script.js"></script>
 </body>
 
