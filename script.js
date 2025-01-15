@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const entriesList = document.getElementById('entries');
     const entryCount = document.getElementById('entry-count');
     const clearEntriesButton = document.getElementById('clear-entries');
-    const importEntriesInput = document.getElementById('import-entries');
     const generateDailyReportTextButton = document.getElementById('generate-daily-report-text');
     const generateDailyReportExcelButton = document.getElementById('generate-daily-report-excel');
     const generateMonthlyReportTextButton = document.getElementById('generate-monthly-report-text');
     const generateMonthlyReportExcelButton = document.getElementById('generate-monthly-report-excel');
+    
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const feedback = document.createElement('p');
     feedback.id = 'feedback';
@@ -23,18 +23,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageInfo = document.getElementById('page-info');
 
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
-    const isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
+    let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
     const entriesPerPage = 5;
     let currentPage = 1;
     let filteredEntries = entries;
 
+    // Initial theme setup
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
         document.querySelector('header').classList.add('dark-mode');
         document.querySelector('footer').classList.add('dark-mode');
         darkModeToggle.checked = true;
+    } else {
+        document.body.classList.remove('dark-mode');
+        document.querySelector('header').classList.remove('dark-mode');
+        document.querySelector('footer').classList.remove('dark-mode');
+        darkModeToggle.checked = false;
     }
 
+    // Convert name input to uppercase
+    nameInput.addEventListener('input', () => {
+        nameInput.value = nameInput.value.toUpperCase();
+    });
+
+    // Convert vehicle input to uppercase and limit to 10 characters
     vehicleInput.addEventListener('input', () => {
         vehicleInput.value = vehicleInput.value.toUpperCase();
         if (vehicleInput.value.length > 10) {
@@ -43,14 +55,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Convert purpose input to uppercase
+    purposeInput.addEventListener('input', () => {
+        purposeInput.value = purposeInput.value.toUpperCase();
+    });
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        const entryTime = new Date(timeInput.value);
+
         const entry = {
             id: Date.now(),
             name: nameInput.value.trim(),
             vehicle: vehicleInput.value.trim(),
             purpose: purposeInput.value.trim(),
-            entryTime: timeInput.value,
+            entryTime: entryTime.toLocaleString(),
             exitTime: null
         };
         if (validateEntry(entry)) {
@@ -75,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchInput.addEventListener('input', () => {
         const query = searchInput.value.toLowerCase();
-        filteredEntries = entries.filter(entry => 
+        filteredEntries = entries.filter(entry =>
             entry.name.toLowerCase().includes(query) ||
             entry.vehicle.toLowerCase().includes(query) ||
             entry.entryTime.includes(query)
@@ -91,32 +110,23 @@ document.addEventListener('DOMContentLoaded', () => {
         showFeedback('All entries cleared!', 'success');
     });
 
-    importEntriesInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                try {
-                    const importedEntries = JSON.parse(event.target.result);
-                    if (Array.isArray(importedEntries)) {
-                        entries = importedEntries;
-                        filteredEntries = entries;
-                        updateEntries();
-                        showFeedback('Entries imported successfully!', 'success');
-                    } else {
-                        showFeedback('Invalid file format.', 'error');
-                    }
-                } catch (error) {
-                    showFeedback('Error reading file.', 'error');
-                }
-            };
-            reader.readAsText(file);
-        }
-    });
+    generateDailyReportTextButton.addEventListener('click', generateDailyReportText);
+    generateDailyReportExcelButton.addEventListener('click', generateDailyReportExcel);
+    generateMonthlyReportTextButton.addEventListener('click', generateMonthlyReportText);
+    generateMonthlyReportExcelButton.addEventListener('click', generateMonthlyReportExcel);
 
-    generateDailyReportTextButton.addEventListener('click', () => {
-        const today = new Date().toISOString().slice(0, 10);
-        const dailyEntries = entries.filter(entry => entry.entryTime.startsWith(today));
+    function generateDailyReportText() {
+        const today = new Date().toLocaleDateString();
+        const dailyEntries = entries.filter(entry => {
+            const entryDate = new Date(entry.entryTime).toLocaleDateString();
+            return entryDate === today;
+        });
+
+        if (dailyEntries.length === 0) {
+            showFeedback('No entries found for today.', 'error');
+            return;
+        }
+
         const reportEntries = dailyEntries.map((entry, index) => ({
             serialNo: index + 1,
             name: entry.name,
@@ -125,21 +135,35 @@ document.addEventListener('DOMContentLoaded', () => {
             entryTime: entry.entryTime,
             exitTime: entry.exitTime || 'Not exited'
         }));
-        const dataStr = "data:text/plain;charset=utf-8," + reportEntries.map(entry => 
+
+        const reportContent = reportEntries.map(entry =>
             `${entry.serialNo} - ${entry.name} - ${entry.vehicle} - ${entry.purpose} - ${entry.entryTime} - ${entry.exitTime}`
         ).join("\n");
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "daily_report.txt");
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-        showFeedback('Daily report generated successfully!', 'success');
-    });
 
-    generateDailyReportExcelButton.addEventListener('click', () => {
-        const today = new Date().toISOString().slice(0, 10);
-        const dailyEntries = entries.filter(entry => entry.entryTime.startsWith(today));
+        const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = `daily_report_${today.replace(/\//g, '-')}.txt`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        showFeedback('Daily report generated successfully!', 'success');
+    }
+
+    function generateDailyReportExcel() {
+        const today = new Date().toLocaleDateString();
+        const dailyEntries = entries.filter(entry => {
+            const entryDate = new Date(entry.entryTime).toLocaleDateString();
+            return entryDate === today;
+        });
+
+        if (dailyEntries.length === 0) {
+            showFeedback('No entries found for today.', 'error');
+            return;
+        }
+
         const reportEntries = dailyEntries.map((entry, index) => ({
             serialNo: index + 1,
             name: entry.name,
@@ -148,16 +172,32 @@ document.addEventListener('DOMContentLoaded', () => {
             entryTime: entry.entryTime,
             exitTime: entry.exitTime || 'Not exited'
         }));
+
         const worksheet = XLSX.utils.json_to_sheet(reportEntries);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Daily Report");
-        XLSX.writeFile(workbook, "daily_report.xlsx");
+        XLSX.writeFile(workbook, `daily_report_${today.replace(/\//g, '-')}.xlsx`);
         showFeedback('Daily report generated successfully!', 'success');
-    });
+    }
 
-    generateMonthlyReportTextButton.addEventListener('click', () => {
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        const monthlyEntries = entries.filter(entry => entry.entryTime.startsWith(currentMonth));
+    function generateMonthlyReportText() {
+        const monthSelect = document.getElementById('month-select');
+        const yearSelect = document.getElementById('year-select');
+        const selectedMonth = parseInt(monthSelect.value);
+        const selectedYear = parseInt(yearSelect.value);
+    
+        const monthlyEntries = entries.filter(entry => {
+            const entryDate = new Date(entry.entryTime);
+            const entryMonth = entryDate.getMonth() + 1; // getMonth() returns 0-11
+            const entryYear = entryDate.getFullYear();
+            return entryMonth === selectedMonth && entryYear === selectedYear;
+        });
+    
+        if (monthlyEntries.length === 0) {
+            showFeedback('No entries found for the selected month.', 'error');
+            return;
+        }
+    
         const reportEntries = monthlyEntries.map((entry, index) => ({
             serialNo: index + 1,
             name: entry.name,
@@ -166,21 +206,40 @@ document.addEventListener('DOMContentLoaded', () => {
             entryTime: entry.entryTime,
             exitTime: entry.exitTime || 'Not exited'
         }));
-        const dataStr = "data:text/plain;charset=utf-8," + reportEntries.map(entry => 
+    
+        const reportContent = reportEntries.map(entry =>
             `${entry.serialNo} - ${entry.name} - ${entry.vehicle} - ${entry.purpose} - ${entry.entryTime} - ${entry.exitTime}`
         ).join("\n");
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "monthly_report.txt");
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
+    
+        const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+    
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = `monthly_report_${selectedMonth}_${selectedYear}.txt`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    
         showFeedback('Monthly report generated successfully!', 'success');
-    });
-
-    generateMonthlyReportExcelButton.addEventListener('click', () => {
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        const monthlyEntries = entries.filter(entry => entry.entryTime.startsWith(currentMonth));
+    }
+    function generateMonthlyReportExcel() {
+        const monthSelect = document.getElementById('month-select');
+        const yearSelect = document.getElementById('year-select');
+        const selectedMonth = parseInt(monthSelect.value);
+        const selectedYear = parseInt(yearSelect.value);
+    
+        const monthlyEntries = entries.filter(entry => {
+            const entryDate = new Date(entry.entryTime);
+            const entryMonth = entryDate.getMonth() + 1; // getMonth() returns 0-11
+            const entryYear = entryDate.getFullYear();
+            return entryMonth === selectedMonth && entryYear === selectedYear;
+        });
+    
+        if (monthlyEntries.length === 0) {
+            showFeedback('No entries found for the selected month.', 'error');
+            return;
+        }
+    
         const reportEntries = monthlyEntries.map((entry, index) => ({
             serialNo: index + 1,
             name: entry.name,
@@ -189,18 +248,29 @@ document.addEventListener('DOMContentLoaded', () => {
             entryTime: entry.entryTime,
             exitTime: entry.exitTime || 'Not exited'
         }));
+    
         const worksheet = XLSX.utils.json_to_sheet(reportEntries);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Monthly Report");
-        XLSX.writeFile(workbook, "monthly_report.xlsx");
+        XLSX.writeFile(workbook, `monthly_report_${selectedMonth}_${selectedYear}.xlsx`);
+    
         showFeedback('Monthly report generated successfully!', 'success');
-    });
+    }
+    
 
     darkModeToggle.addEventListener('change', () => {
-        document.body.classList.toggle('dark-mode');
-        document.querySelector('header').classList.toggle('dark-mode');
-        document.querySelector('footer').classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', JSON.stringify(darkModeToggle.checked));
+        isDarkMode = darkModeToggle.checked;
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+            document.querySelector('header').classList.add('dark-mode');
+            document.querySelector('footer').classList.add('dark-mode');
+            localStorage.setItem('darkMode', JSON.stringify(true));
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.querySelector('header').classList.remove('dark-mode');
+            document.querySelector('footer').classList.remove('dark-mode');
+            localStorage.setItem('darkMode', JSON.stringify(false));
+        }
     });
 
     prevPageButton.addEventListener('click', () => {
@@ -232,12 +302,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function editEntry(li) {
         const entry = entries.find(entry => entry.id === parseInt(li.dataset.id));
-        nameInput.value = entry.name;
-        vehicleInput.value = entry.vehicle;
-        purposeInput.value = entry.purpose;
-        timeInput.value = entry.entryTime;
-        deleteEntry(li);
-        showFeedback('Entry ready to edit.', 'info');
+        if (entry) {
+            nameInput.value = entry.name;
+            vehicleInput.value = entry.vehicle;
+            purposeInput.value = entry.purpose;
+            const [datePart, timePart] = entry.entryTime.split(', ');
+            const date = new Date(datePart + ' ' + timePart);
+            timeInput.value = date.toISOString().slice(0, 16);
+            deleteEntry(li);
+            showFeedback('Entry ready to edit.', 'info');
+        }
     }
 
     function deleteEntry(li) {
@@ -249,9 +323,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function markAsExited(li) {
         const entry = entries.find(entry => entry.id === parseInt(li.dataset.id));
-        entry.exitTime = new Date().toLocaleString();
-        updateEntries();
-        showFeedback('Entry marked as exited!', 'success');
+        if (entry && !entry.exitTime) {
+            entry.exitTime = new Date().toLocaleString(); // Set the current time as the exit time
+            updateEntries(); // Update the entries list to reflect the change
+            showFeedback('Entry marked as exited!', 'success');
+        }
     }
 
     function updateEntries() {
@@ -289,4 +365,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateEntries();
+
+    let countEl = document.getElementById("count-el");
+    let saveEl = document.getElementById("save-el");
+    let count = 0;
+
+    function increment() {
+        count += 1;
+        countEl.textContent = count;
+    }
+
+    function save() {
+        let countStr = count + " - ";
+        saveEl.textContent += countStr;
+        countEl.textContent = 0;
+        count = 0;
+    }
+
+    console.log("let's count people on subway !");
 });

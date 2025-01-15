@@ -7,12 +7,13 @@
     <title>Gate Entry Management System</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 
-<body>
-    <header>
-        <h1>Gate Entry Management System</h1>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-gray-800 text-white p-4 flex justify-between items-center w-full">
+        <h1 class="text-2xl font-bold">Gate Entry Management System</h1>
         <label class="switch">
             <input type="checkbox" id="dark-mode-toggle">
             <span class="slider round">
@@ -23,51 +24,74 @@
             </span>
         </label>
     </header>
-    <main>
-        <section id="entry-form">
-            <form id="gateForm">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+    <main class="flex flex-col items-center p-6">
+        <section id="entry-form" class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+            <form id="gateForm" class="flex flex-col gap-4">
+                <label for="name" class="font-medium">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter Your Name" required class="border border-gray-300 rounded p-2">
                 
-                <label for="vehicle">Vehicle Number:</label>
-                <input type="text" id="vehicle" name="vehicle" placeholder="Enter vehicle number" required>
+                <label for="vehicle" class="font-medium">Vehicle Number:</label>
+                <input type="text" id="vehicle" name="vehicle" placeholder="Enter vehicle number | Format:AB12AB1234" required class="border border-gray-300 rounded p-2">
                 
-                <label for="purpose">Purpose:</label>
-                <input type="text" id="purpose" name="purpose" placeholder="Enter purpose" required>
+                <label for="purpose" class="font-medium">Purpose:</label>
+                <input type="text" id="purpose" name="purpose" placeholder="Enter Purpose" required class="border border-gray-300 rounded p-2">
                 
-                <label for="time">Entry Time:</label>
-                <input type="datetime-local" id="time" name="time" required>
+                <label for="time" class="font-medium">Entry Time:</label>
+                <input type="datetime-local" id="time" name="time" required class="border border-gray-300 rounded p-2">
                 
-                <button type="submit">Submit</button>
+                <button type="submit" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Submit</button>
             </form>
         </section>
-        <section id="entry-list">
-            <h2>Entries</h2>
-            <input type="text" id="search" placeholder="Search by name, vehicle, or date">
-            <p>Total Entries: <span id="entry-count">0</span></p>
-            <ul id="entries">
+        <section id="entry-list" class="mt-6 w-full max-w-md">
+            <h2 class="text-xl font-semibold mb-4">Entries</h2>
+            <input type="text" id="search" placeholder="Search by name, vehicle, or date" class="border border-gray-300 rounded p-2 mb-4 w-full">
+            <p class="font-medium">Total Entries: <span id="entry-count">0</span></p>
+            <ul id="entries" class="list-disc pl-5">
                 <!-- Entries will be dynamically added here -->
             </ul>
-            <div id="pagination">
-                <button id="prev-page" disabled>Previous</button>
-                <span id="page-info">Page 1</span>
-                <button id="next-page">Next</button>
+            <div id="pagination" class="flex justify-center mt-4">
+                <button id="prev-page" disabled class="bg-gray-300 text-gray-800 rounded p-2 hover:bg-gray-400">Previous</button>
+                <span id="page-info" class="mx-2">Page 1</span>
+                <button id="next-page" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Next</button>
             </div>
-            <button id="clear-entries">Clear All Entries</button>
-            <input type="file" id="import-entries" style="display: none;">
-            <label for="import-entries" class="import-label">Import Entries</label>
+            <button id="clear-entries" class="bg-red-500 text-white rounded p-2 hover:bg-red-600 mt-4 mx-auto block">Clear All Entries</button>
         </section>
-        <section id="report-section">
-            <h2>Generate Reports</h2>
-            <button id="generate-daily-report-text">Generate Daily Report (Text)</button>
-            <button id="generate-daily-report-excel">Generate Daily Report (Excel)</button>
-            <button id="generate-monthly-report-text">Generate Monthly Report (Text)</button>
-            <button id="generate-monthly-report-excel">Generate Monthly Report (Excel)</button>
+        <section id="report-section" class="mt-6 w-full max-w-md">
+            <h2 class="text-xl font-semibold mb-4">Generate Reports</h2>
+            <button id="generate-daily-report-text" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Daily Report (Text)</button>
+            <button id="generate-daily-report-excel" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 ml-2">Daily Report (Excel)</button>
+            <div class="mt-4">
+                <label for="month-select" class="block font-medium">Select Month:</label>
+                <select id="month-select" class="border border-gray-300 rounded p-2 w-full">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+            <div class="mt-2">
+                <label for="year-select" class="block font-medium">Select Year:</label>
+                <select id="year-select" class="border border-gray-300 rounded p-2 w-full">
+                    <!-- Add options for years, e.g., 2020 to 2030 -->
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+            <button id="generate-monthly-report-text" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 mt-2">Monthly Report (Text)</button>
+            <button id="generate-monthly-report-excel" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600 mt-2">Monthly Report (Excel)</button>
         </section>
-    </main>
-    <footer>
-        <p>&copy; 2023 Entry Count</p>
-    </footer>
+        <footer id="footer" class="footer bg-gray-800 text-white p-4 text-center">
+            <p>© 2023 Entry Count</p>
+        </footer>
     <script src="script.js"></script>
 </body>
 
