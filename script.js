@@ -115,18 +115,60 @@ document.addEventListener('DOMContentLoaded', () => {
     generateMonthlyReportTextButton.addEventListener('click', generateMonthlyReportText);
     generateMonthlyReportExcelButton.addEventListener('click', generateMonthlyReportExcel);
 
+    // function generateDailyReportText() {
+    //     const today = new Date().toLocaleDateString();
+    //     const dailyEntries = entries.filter(entry => {
+    //         const entryDate = new Date(entry.entryTime).toLocaleDateString();
+    //         return entryDate === today;
+    //     });
+
+    //     if (dailyEntries.length === 0) {
+    //         showFeedback('No entries found for today.', 'error');
+    //         return;
+    //     }
+    //     console.log("Filtered Entries: ", dailyEntries);
+
+    //     const reportEntries = dailyEntries.map((entry, index) => ({
+    //         serialNo: index + 1,
+    //         name: entry.name,
+    //         vehicle: entry.vehicle,
+    //         purpose: entry.purpose,
+    //         entryTime: entry.entryTime,
+    //         exitTime: entry.exitTime || 'Not exited'
+    //     }));
+
+    //     const reportContent = reportEntries.map(entry =>
+    //         `${entry.serialNo} - ${entry.name} - ${entry.vehicle} - ${entry.purpose} - ${entry.entryTime} - ${entry.exitTime}`
+    //     ).join("\n");
+
+    //     const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+    //     console.log("Blob created:", blob);
+
+    //     const downloadLink = document.createElement('a');
+    //     downloadLink.href = URL.createObjectURL(blob);
+    //     downloadLink.download = `daily_report_${today.replace(/\//g, '-')}.txt`;
+
+    //     console.log("Download link created:", downloadLink);
+
+    //     document.body.appendChild(downloadLink);
+    //     downloadLink.click();
+    //     document.body.removeChild(downloadLink);
+
+    //     showFeedback('Daily report generated successfully!', 'success');
+    // }
+
     function generateDailyReportText() {
         const today = new Date().toLocaleDateString();
         const dailyEntries = entries.filter(entry => {
             const entryDate = new Date(entry.entryTime).toLocaleDateString();
             return entryDate === today;
         });
-
+    
         if (dailyEntries.length === 0) {
             showFeedback('No entries found for today.', 'error');
             return;
         }
-
+    
         const reportEntries = dailyEntries.map((entry, index) => ({
             serialNo: index + 1,
             name: entry.name,
@@ -135,20 +177,14 @@ document.addEventListener('DOMContentLoaded', () => {
             entryTime: entry.entryTime,
             exitTime: entry.exitTime || 'Not exited'
         }));
-
+    
         const reportContent = reportEntries.map(entry =>
             `${entry.serialNo} - ${entry.name} - ${entry.vehicle} - ${entry.purpose} - ${entry.entryTime} - ${entry.exitTime}`
         ).join("\n");
-
+    
         const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
-
-        const downloadLink = document.createElement('a');
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = `daily_report_${today.replace(/\//g, '-')}.txt`;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-
+        saveAs(blob, `daily_report_${today.replace(/\//g, '-')}.txt`);
+    
         showFeedback('Daily report generated successfully!', 'success');
     }
 

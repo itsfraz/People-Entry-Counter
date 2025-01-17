@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gate Entry Management System</title>
+    <title>Gate Entry System</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 
 <body class="bg-gray-100 text-gray-800">
     <header class="bg-gray-800 text-white p-4 flex justify-between items-center w-full">
-        <h1 class="text-2xl font-bold">Gate Entry Management System</h1>
+        <h1 class="text-2xl font-bold">Gate Entry System</h1>
         <label class="switch">
             <input type="checkbox" id="dark-mode-toggle">
             <span class="slider round">
@@ -27,7 +27,7 @@
     <main class="flex flex-col items-center p-6">
         <section id="entry-form" class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
             <form id="gateForm" class="flex flex-col gap-4">
-                <label for="name" class="font-medium">Name:</label>
+                <label for="name" class="font-medium">Full Name:</label>
                 <input type="text" id="name" name="name" placeholder="Enter Your Name" required
                     class="border border-gray-300 rounded p-2">
 
@@ -64,7 +64,8 @@
                 All Entries</button>
         </section>
         <section id="report-section" class="mt-6 w-full max-w-md">
-            <h2 class="text-xl font-semibold mb-4">Generate Reports</h2>
+            <h2 class="text-2xl font-semibold mb-4">Generate Reports</h2>
+            
             <div class="report-buttons">
                 <button id="generate-daily-report-text"
                     class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Daily Report (Text)</button>
@@ -106,10 +107,12 @@
         </section>
         
     </main>
+    <p class="text-sm text-gray-600 mb-1 italic text-center">Note: Genrate Reports function works only in PC (It was working in Mobile before, But Now its Not , Bug Problem !,I will Fix ASAP) .</p>
      <footer id="footer" class="footer bg-gray-800 text-white p-4 text-center mt-auto">
             <p>© 2023 Entry Count</p>
     </footer>
     <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </body>
 
 </html>
