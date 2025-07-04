@@ -99,14 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     entriesList.addEventListener('click', (e) => {
-        if (e.target.classList.contains('edit')) {
-            editEntry(e.target.parentElement);
-        } else if (e.target.classList.contains('delete')) {
-            deleteEntry(e.target.parentElement);
-        } else if (e.target.classList.contains('exit')) {
-            markAsExited(e.target.parentElement);
-        }
-    });
+    const li = e.target.closest('li');
+    if (!li) return;
+    if (e.target.classList.contains('edit')) {
+        editEntry(li);
+    } else if (e.target.classList.contains('delete')) {
+        deleteEntry(li);
+    } else if (e.target.classList.contains('exit')) {
+        markAsExited(li);
+    }
+});
 
     searchInput.addEventListener('input', () => {
         const query = searchInput.value.toLowerCase();
@@ -385,6 +387,8 @@ document.addEventListener('DOMContentLoaded', () => {
         prevPageButton.disabled = currentPage === 1;
         nextPageButton.disabled = currentPage === Math.ceil(filteredEntries.length / entriesPerPage);
         localStorage.setItem('entries', JSON.stringify(entries));
+        renderVisitorChart(filteredEntries);
+        renderFrequencyChart(filteredEntries);
     }
 
     function showFeedback(message, type) {
@@ -405,4 +409,91 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
     
     document.querySelectorAll('section, #entries li').forEach(el => observer.observe(el));
+
+    function renderVisitorChart(entries) {
+        const ctx = document.getElementById('visitorChart').getContext('2d');
+        // Group by date
+        const dateCounts = {};
+        entries.forEach(e => {
+            const date = new Date(e.entryTime).toLocaleDateString();
+            dateCounts[date] = (dateCounts[date] || 0) + 1;
+        });
+        const labels = Object.keys(dateCounts);
+        const data = Object.values(dateCounts);
+
+        if (window.visitorChartInstance) window.visitorChartInstance.destroy();
+        window.visitorChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Entries per Day',
+                    data,
+                    backgroundColor: '#6366f1'
+                }]
+            }
+        });
+    }
+
+    function renderFrequencyChart(entries) {
+        const freq = {};
+        entries.forEach(e => {
+            if (e.visitors) {
+                e.visitors.forEach(v => {
+                    freq[v.name] = (freq[v.name] || 0) + 1;
+                });
+            }
+        });
+        const labels = Object.keys(freq);
+        const data = Object.values(freq);
+
+        if (window.freqChartInstance) window.freqChartInstance.destroy();
+        window.freqChartInstance = new Chart(document.getElementById('freqChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Visitor Frequency',
+                    data,
+                    backgroundColor: ['#6366f1', '#818cf8', '#f59e42', '#10b981', '#ef4444']
+                }]
+            }
+        });
+    }
+
+    // Call this after loading/filtering entries:
+    renderVisitorChart(filteredEntries);
+    renderFrequencyChart(filteredEntries);
+
+    document.getElementById('filter-report').addEventListener('click', () => {
+        const from = document.getElementById('report-from').value;
+        const to = document.getElementById('report-to').value;
+        let filtered = entries;
+        if (from) filtered = filtered.filter(e => new Date(e.entryTime) >= new Date(from));
+        if (to) filtered = filtered.filter(e => new Date(e.entryTime) <= new Date(to + 'T23:59:59'));
+        renderVisitorChart(filtered);
+        renderFrequencyChart(filtered);
+        // You can also update table/list here
+    });
+
+    document.getElementById('export-pdf').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text('Gate Entry Report', 10, 10);
+        let y = 20;
+        filteredEntries.forEach(e => {
+            doc.text(`${e.entryTime} - ${e.visitors.map(v => v.name).join(', ')} - ${e.purpose}`, 10, y);
+            y += 10;
+            if (y > 270) { doc.addPage(); y = 10; }
+        });
+        doc.save('GateEntryReport.pdf');
+    });
+
+    document.getElementById('email-report').addEventListener('click', () => {
+        let body = 'Gate Entry Report:%0D%0A';
+        filteredEntries.forEach(e => {
+            body += `${e.entryTime} - ${e.visitors.map(v => v.name).join(', ')} - ${e.purpose}%0D%0A`;
+        });
+        window.location.href = `mailto:?subject=Gate Entry Report&body=${body}`;
+    });
 });

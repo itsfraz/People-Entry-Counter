@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
   <body>
@@ -106,14 +107,23 @@
       <div class="content-box enhanced-report">
         <section id="report-section">
           <h2 class="section-title">Generate Reports</h2>
-          <div class="report-buttons">
-            <button id="generate-daily-report-text" class="primary-btn enhanced-btn">
-              Daily Report (Text)
+
+          <!-- Daily Report Buttons -->
+          <div class="report-btn-row">
+            <button
+              id="generate-daily-report-text"
+              class="primary-btn enhanced-btn"
+            >
+              Daily R (Text)
             </button>
-            <button id="generate-daily-report-excel" class="primary-btn enhanced-btn">
-              Daily Report (Excel)
+            <button
+              id="generate-daily-report-excel"
+              class="primary-btn enhanced-btn"
+            >
+              Daily R (Excel)
             </button>
           </div>
+
           <div class="select-row">
             <label for="month-select">Select Month:</label>
             <select id="month-select">
@@ -139,14 +149,32 @@
               <option value="2025">2025</option>
             </select>
           </div>
-          <div class="report-buttons">
-            <button id="generate-monthly-report-text" class="primary-btn enhanced-btn">
-              Monthly Report (Text)
+          <div class="select-row">
+            <label>From:</label>
+            <input type="date" id="report-from" />
+            <label>To:</label>
+            <input type="date" id="report-to" />
+            <button id="filter-report" class="primary-btn">Filter</button>
+          </div>
+
+          <!-- Monthly Report Buttons -->
+          <div class="report-btn-row">
+            <button
+              id="generate-monthly-report-text"
+              class="primary-btn enhanced-btn"
+            >
+              Monthly R (Text)
             </button>
-            <button id="generate-monthly-report-excel" class="primary-btn enhanced-btn">
-              Monthly Report (Excel)
+            <button
+              id="generate-monthly-report-excel"
+              class="primary-btn enhanced-btn"
+            >
+              Monthly R (Excel)
             </button>
           </div>
+          <button id="email-report" class="primary-btn">Email Report</button>
+          <button id="export-pdf" class="primary-btn">Export Report to PDF</button>
+          <canvas id="freqChart" width="400" height="200"></canvas>
         </section>
       </div>
     </main>
@@ -157,5 +185,7 @@
 
     <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   </body>
 </html>
+

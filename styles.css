@@ -398,31 +398,43 @@ main {
   flex-wrap: wrap;
 }
 
+.report-btn-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+@media (max-width: 600px) {
+  .report-btn-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
 .select-row {
   display: flex;
   align-items: center;
   gap: 0.7rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;           /* Allow wrapping */
 }
 
-.select-row label {
-  font-weight: 500;
-  color: #374151;
+.select-row button {
+  margin-top: 0;             /* Remove extra margin if any */
+  white-space: nowrap;       /* Prevent text wrap inside button */
 }
 
-.select-row select {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1.5px solid #c7d2fe;
-  background: #f4f6fb;
-  font-size: 1rem;
-  transition: border 0.2s;
-}
-
-.select-row select:focus {
-  border-color: #6366f1;
-  background: #e0e7ff;
-  outline: none;
+@media (max-width: 600px) {
+  .select-row {
+    flex-direction: column;  /* Stack items vertically on mobile */
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .select-row button {
+    width: 100%;             /* Make button full width on mobile */
+  }
 }
 
 /* Feedback Message */
