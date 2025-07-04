@@ -212,6 +212,20 @@ main {
   outline: none;
 }
 
+.form-row select {
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  background: #f4f6fb;
+  transition: border 0.2s, background 0.2s;
+}
+.form-row select:focus {
+  border-color: #6366f1;
+  background: #e0e7ff;
+  outline: none;
+}
+
 .primary-btn,
 .danger-btn,
 .enhanced-btn {
@@ -256,13 +270,15 @@ main {
 }
 
 #entries li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
   background: #f4f6fb;
   border-radius: 0.7rem;
   margin-bottom: 1rem;
   padding: 1rem 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
   box-shadow: 0 2px 8px #6366f11a;
   opacity: 0;
   transform: translateY(20px);
@@ -274,17 +290,24 @@ main {
   transform: translateY(0);
 }
 
+#entries li .entry-info {
+  flex: 1 1 60%;
+  min-width: 180px;
+}
+
+#entries li .entry-actions {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
 #entries li button {
-  margin-right: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.4rem 1rem;
-  border-radius: 0.5rem;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 500;
+  margin: 0;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.92rem;
+  border-radius: 0.4rem;
+  min-width: 60px;
   cursor: pointer;
-  background: #6366f1;
-  color: #fff;
   transition: background 0.2s;
 }
 

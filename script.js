@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('name');
     const vehicleInput = document.getElementById('vehicle');
     const purposeInput = document.getElementById('purpose');
+    const purposeOtherInput = document.getElementById('purpose-other');
     const timeInput = document.getElementById('time');
     const searchInput = document.getElementById('search');
     const entriesList = document.getElementById('entries');
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
     let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
-    const entriesPerPage = 5;
+    const entriesPerPage = 2;
     let currentPage = 1;
     let filteredEntries = entries;
 
@@ -56,8 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Convert purpose input to uppercase
-    purposeInput.addEventListener('input', () => {
-        purposeInput.value = purposeInput.value.toUpperCase();
+    // purposeInput.addEventListener('input', () => {
+    //     purposeInput.value = purposeInput.value.toUpperCase();
+    // });
+
+    // Show/hide 'Other' purpose input
+    purposeInput.addEventListener('change', () => {
+        if (purposeInput.value === 'Other') {
+            purposeOtherInput.style.display = 'block';
+            purposeOtherInput.required = true;
+        } else {
+            purposeOtherInput.style.display = 'none';
+            purposeOtherInput.required = false;
+            purposeOtherInput.value = '';
+        }
     });
 
     form.addEventListener('submit', (e) => {
@@ -68,7 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
             id: Date.now(),
             name: nameInput.value.trim(),
             vehicle: vehicleInput.value.trim(),
-            purpose: purposeInput.value.trim(),
+            purpose: purposeInput.value === 'Other'
+                ? purposeOtherInput.value.trim().toUpperCase()
+                : purposeInput.value,
             entryTime: entryTime.toLocaleString(),
             exitTime: null
         };
@@ -342,20 +357,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateEntries() {
         entriesList.innerHTML = '';
+        // Show latest entries first
+        const orderedEntries = [...filteredEntries].reverse();
         const start = (currentPage - 1) * entriesPerPage;
         const end = start + entriesPerPage;
-        const paginatedEntries = filteredEntries.slice(start, end);
+        const paginatedEntries = orderedEntries.slice(start, end);
 
         paginatedEntries.forEach((entry, index) => {
             const li = document.createElement('li');
             li.dataset.id = entry.id;
             li.innerHTML = `
+              <span class="entry-info">
                 ${start + index + 1}. ${entry.name} - ${entry.vehicle} - ${entry.purpose} - ${entry.entryTime} - ${entry.exitTime ? entry.exitTime : 'Not exited'}
+              </span>
+              <span class="entry-actions">
                 <button class="edit">Edit</button>
                 <button class="delete">Delete</button>
                 <button class="exit" ${entry.exitTime ? 'disabled' : ''}>Exit</button>
+              </span>
             `;
-            // Add visible class for animation
             li.classList.add('visible');
             entriesList.appendChild(li);
         });

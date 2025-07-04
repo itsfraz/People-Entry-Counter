@@ -53,12 +53,22 @@
             </div>
             <div class="form-row">
               <label for="purpose"><span>Purpose</span></label>
+              <select id="purpose" name="purpose" required>
+                <option value="">Select Purpose</option>
+                <option value="Delivery">Delivery</option>
+                <option value="Meeting">Meeting</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Interview">Interview</option>
+                <option value="Guest Visit">Guest Visit</option>
+                <option value="Official Work">Official Work</option>
+                <option value="Other">Other</option>
+              </select>
               <input
                 type="text"
-                id="purpose"
-                name="purpose"
+                id="purpose-other"
+                name="purpose-other"
                 placeholder="Enter Purpose"
-                required
+                style="display:none; margin-top:0.5rem;"
               />
             </div>
             <div class="form-row">
