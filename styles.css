@@ -1,424 +1,535 @@
-/* Custom animations and transitions */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-/* Enhanced List Items */
-#entries {
-    display: grid;
-    gap: 1rem;
-    width: 100%;
-}
-#entries li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #ffffff;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: fadeIn 0.5s ease-in-out;
-    flex-wrap: wrap; /* Allow content to wrap on smaller screens */
-}
-#entries li:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-#entries li button {
-    margin-left: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-     margin-top: 0.5rem; /* Add some top margin for smaller screens */
-}
-
-#entries li button.edit {
-    background-color: #4f46e5;
-    color: white;
-}
-
-#entries li button.delete {
-    background-color: #ef4444;
-    color: white;
-}
-
-#entries li button.exit {
-    background-color: #4CAF50;
-    color: white;
-}
-
-#entries li button:hover {
-    transform: scale(1.05);
-}
-
-#entries li button:active {
-    transform: scale(0.95);
-}
-
-/* Theme-specific styles using Tailwind */
-body.dark-mode {
-    background-color: #181818;
-    color: #e0e0e0;
-}
-
-/* Dark mode styles */
-body.dark-mode #entry-count,
-body.dark-mode li {
-    font-weight: bold;
-    color: #582ed7;
-}
-
-body.dark-mode li {
-    background-color: #333333; /* Adjust background color for list items in dark mode */
-    border-color: #555555; /* Adjust border color for list items in dark mode */
-}
-
-header.dark-mode, footer.dark-mode {
-    background-color: #374151;
-    color: #ffffff;
-}
-
-/* Switch styles */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-    margin-left: 1rem;
-    transition: width 0.3s, height 0.3s, margin-left 0.3s;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
-    background-color: #2196F3;
-}
-
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
-.sun-moon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.3s;
-}
-
-.sun, .moon {
-    position: absolute;
-    font-size: 1.5rem;
-    transition: opacity 0.4s;
-}
-
-.sun {
-    opacity: 1;
-}
-
-.moon {
-    opacity: 0;
-}
-
-input:checked + .slider .sun {
-    opacity: 0;
-}
-
-input:checked + .slider .moon {
-    opacity: 1;
-}
-
-/* Alignment Enhancements */
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* Color Enhancements for Active Elements */
-button:active {
-    background-color: #0044cc;
-    color: #ffffff;
-}
-
-body.dark-mode button:active {
-    background-color: #666666;
-    color: #e0e0e0;
-}
-
-/* Enhance input fields with animations and hover effects */
-input[type="text"], input[type="datetime-local"], #search {
-    width: 100%;
-    padding: 0.5rem;
-    border: 2px solid #ccc;
-    border-radius: 0.5rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-}
-
-input[type="text"]:focus, input[type="datetime-local"]:focus, #search:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
-    outline: none;
-}
-
-input[type="text"]:hover, input[type="datetime-local"]:hover, #search:hover {
-    border-color: #0056b3;
-}
-
-/* Arrange generate report buttons in one column with text in one row */
-#report-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.report-buttons {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-    gap: 0.5rem; /* Add gap between buttons */
-    width: 100%; /* Ensure buttons take up full width */
-    margin-bottom: 0.5rem; /* Add some spacing below the buttons */
-}
-
-#generate-daily-report-text, #generate-daily-report-excel, #generate-monthly-report-text, #generate-monthly-report-excel {
-    background-color: #4f46e5;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    text-align: center;
-    width: auto; /* Make buttons auto-sized */
-    max-width: 100%; /* Take up full width if needed */
-    white-space: nowrap;
-    transition: background-color 0.3s;
-    flex: 1 1 200px; /* Allow buttons to grow/shrink and set a base width */
-}
-
-#generate-daily-report-text:hover, #generate-daily-report-excel:hover, #generate-monthly-report-text:hover, #generate-monthly-report-excel:hover  {
-    background-color: #4338ca;
-}
-
-#report-section label, #report-section select {
-    display: block;
-    margin-bottom: 1rem;
-}
-
-#report-section select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-}
-
-/* Added for input text and labels in dark mode */
-body.dark-mode #gateForm label, 
-body.dark-mode #gateForm input[type="text"],
-body.dark-mode #gateForm input[type="datetime-local"],
-body.dark-mode #search
-{
-    color: #A52A2A; /* Brown color for form labels and inputs*/
-}
-
-
-* {
+/* Reset & Base Styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-/* Enhanced Exit Button Styles */
-button.exit {
-    background-color: #4CAF50; /* Green background */
-    color: white; /* White text */
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-left: 8px; /* Add some spacing between buttons */
+
+html {
+  font-size: 16px;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: #f4f6fb;
+  color: #222;
+  scroll-behavior: smooth;
 }
 
-button.exit:hover {
-    background-color: #45a049; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f4f6fb 100%);
+  transition: background 0.3s;
 }
 
-button.exit:active {
-    background-color: #3d8b40; /* Even darker green on click */
-    transform: scale(0.95); /* Slightly shrink on click */
+/* Header */
+header {
+  background: #4f46e5;
+  color: #fff;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(79, 70, 229, 0.08);
 }
 
-button.exit:disabled {
-    background-color: #cccccc; /* Gray background when disabled */
-    color: #666666; /* Dark gray text when disabled */
-    cursor: not-allowed; /* Change cursor to indicate it's disabled */
-    transform: none; /* Disable hover effects when disabled */
+.glow-heading {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 16px #6366f1, 0 1px 2px #0002;
+  animation: glow 2s infinite alternate;
 }
 
-/* Dark mode styles for the Exit button */
-body.dark-mode button.exit {
-    background-color: #2e7d32; /* Darker green for dark mode */
+@keyframes glow {
+  from { text-shadow: 0 2px 16px #6366f1, 0 1px 2px #0002; }
+  to { text-shadow: 0 4px 32px #818cf8, 0 1px 2px #0002; }
 }
 
-body.dark-mode button.exit:hover {
-    background-color: #1b5e20; /* Even darker green on hover in dark mode */
+/* Dark Mode Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 32px;
 }
 
-body.dark-mode button.exit:disabled {
-    background-color: #555555; /* Dark gray for disabled state in dark mode */
-    color: #999999; /* Light gray text for disabled state in dark mode */
-}
-/* Dark Mode Styles */
-body.dark-mode #entries li {
-    background-color: #333333;
-    color: #e0e0e0;
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-body.dark-mode #entries li button.edit {
-    background-color: #4338ca;
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #c7d2fe;
+  border-radius: 32px;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-body.dark-mode #entries li button.delete {
-    background-color: #dc2626;
+.sun-moon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 36px;
 }
 
-body.dark-mode #entries li button.exit {
-    background-color: #2e7d32;
+.sun, .moon {
+  font-size: 1.2rem;
+  transition: opacity 0.3s;
 }
 
-/* Dark mode styles for dropdown options */
-body.dark-mode #month-select,
-body.dark-mode #year-select {
-    color: #d27575; /* Dark brown color for dropdown text */
-    background-color: #333333; /* Dark background for dropdown */
+input:checked + .slider {
+  background: #1e293b;
 }
-body.dark-mode #month-select option,
-body.dark-mode #year-select option {
-    color: #30d5f2; /* Dark brown color for dropdown options */
-    background-color: #333333; /* Dark background for dropdown options */
+
+input:checked + .slider .sun {
+  opacity: 0.2;
 }
-/* Ensure the dropdown arrow is visible in dark mode */
-body.dark-mode #month-select,
-body.dark-mode #year-select {
-    appearance: none; /* Remove default arrow */
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23A52A2A%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 1rem;
+input:checked + .slider .moon {
+  opacity: 1;
 }
-/* Pagination Styles */
+.slider .moon {
+  opacity: 0.2;
+}
+
+/* Main Layout */
+main {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+}
+
+.content-box {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px rgba(79, 70, 229, 0.08);
+  padding: 2rem 1.5rem;
+  min-width: 320px;
+  max-width: 420px;
+  width: 100%;
+  margin-bottom: 2rem;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+@media (max-width: 900px) {
+  main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  .content-box {
+    max-width: 100%;
+    margin: 0 auto 1.5rem;
+  }
+}
+
+/* Main Layout: Enhanced Horizontal Row for Sections */
+.main-enhanced {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+.main-enhanced .content-box {
+  flex: 1 1 0;
+  min-width: 320px;
+  max-width: 420px;
+  margin-bottom: 0;
+}
+
+/* Responsive: Stack vertically on small screens */
+@media (max-width: 1100px) {
+  .main-enhanced {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+    padding: 1.2rem 0.5rem;
+  }
+  .main-enhanced .content-box {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #4f46e5;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+}
+
+/* Form Styles */
+.form-styled {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.form-row label span {
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-row input[type="text"],
+.form-row input[type="datetime-local"] {
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  background: #f4f6fb;
+  transition: border 0.2s, background 0.2s;
+}
+
+.form-row input:focus {
+  border-color: #6366f1;
+  background: #e0e7ff;
+  outline: none;
+}
+
+.primary-btn,
+.danger-btn,
+.enhanced-btn {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #6366f11a;
+}
+
+.primary-btn {
+  background: linear-gradient(90deg, #6366f1 60%, #818cf8 100%);
+  color: #fff;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(90deg, #818cf8 60%, #6366f1 100%);
+}
+
+.danger-btn {
+  background: #ef4444;
+  color: #fff;
+}
+
+.danger-btn:hover {
+  background: #dc2626;
+}
+
+.enhanced-btn:active {
+  transform: scale(0.97);
+}
+
+/* Entry List */
+#entries {
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+}
+
+#entries li {
+  background: #f4f6fb;
+  border-radius: 0.7rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  box-shadow: 0 2px 8px #6366f11a;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+#entries li.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#entries li button {
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #6366f1;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+#entries li button.edit {
+  background: #f59e42;
+}
+#entries li button.edit:hover {
+  background: #ea580c;
+}
+#entries li button.delete {
+  background: #ef4444;
+}
+#entries li button.delete:hover {
+  background: #dc2626;
+}
+#entries li button.exit {
+  background: #10b981;
+}
+#entries li button.exit[disabled] {
+  background: #a7f3d0;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+#entries li button.exit:hover:not([disabled]) {
+  background: #059669;
+}
+
+/* Entry Count & Search */
+.entry-count-label {
+  font-size: 1.05rem;
+  color: #374151;
+  margin: 0.7rem 0 0.5rem 0;
+}
+
+#search {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 0.7rem;
+  border: 1.5px solid #c7d2fe;
+  background: #f4f6fb;
+  margin-bottom: 0.7rem;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+#search:focus {
+  border-color: #6366f1;
+  background: #e0e7ff;
+  outline: none;
+}
+
+/* Pagination */
 #pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  justify-content: center;
 }
 
 #pagination button {
-    margin: 0 0.5rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.25rem;
-    background-color: #4f46e5;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#pagination button:hover {
-    background-color: #4338ca;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 #pagination button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+  background: #c7d2fe;
+  color: #6b7280;
+  cursor: not-allowed;
 }
-#footer {
-    width: 100%;
-    background-color: #374151; /* Match the header's background color */
-    color: white;
-    text-align: center;
-    padding: 1rem 0; /* Add some padding */
-    margin-top: auto; /* Push the footer to the bottom of the main content */
-.main {
-    min-height: 100vh; /* Take at least the full viewport height */
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
-    position: relative; /* Make footer position relative to main */
+
+#page-info {
+  font-size: 1.05rem;
+  color: #4f46e5;
 }
-#report-section {
-    margin-bottom: 4rem; /* Add margin to the bottom of the report section */
+
+/* Report Section */
+.enhanced-report .report-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
-/* Responsive Styles Using Media Queries */
-@media (max-width: 768px) {
-    #entries li {
-        flex-direction: column; /* Stack content on smaller screens */
-        align-items: flex-start; /* Align content to the start */
-    }
-    
-    #entries li > * {
-        margin-bottom: 0.25rem; /* Add some spacing below the buttons */
-    }
 
-    #entries li button {
-         margin-left: 0;
-         margin-top: 0.25rem; /* Adjust top margin for smaller screens */
-         
-    }
+.select-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
 
-    .report-buttons{
-        flex-direction: column;
-        align-items: center;
-    }
+.select-row label {
+  font-weight: 500;
+  color: #374151;
+}
 
-    #report-section  button{
-           width: 100%;
-           max-width: unset;
-    }
+.select-row select {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid #c7d2fe;
+  background: #f4f6fb;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.select-row select:focus {
+  border-color: #6366f1;
+  background: #e0e7ff;
+  outline: none;
+}
+
+/* Feedback Message */
+#feedback {
+  margin-top: 0.7rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+  min-width: 180px;
+  text-align: center;
+  transition: background 0.3s, color 0.3s;
+}
+
+#feedback.success {
+  background: #d1fae5;
+  color: #065f46;
+}
+#feedback.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+#feedback.info {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+/* Footer */
+footer {
+  background: #4f46e5;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 1rem;
+  border-radius: 1.2rem 1.2rem 0 0;
+  margin-top: auto;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+  color: #f4f6fb;
+}
+
+body.dark-mode .content-box {
+  background: #23233a;
+  color: #f4f6fb;
+  box-shadow: 0 4px 24px rgba(30, 41, 59, 0.18);
+}
+
+body.dark-mode .section-title {
+  color: #a5b4fc;
+}
+
+body.dark-mode .form-row input,
+body.dark-mode #search,
+body.dark-mode .select-row select {
+  background: #18181b;
+  color: #f4f6fb;
+  border-color: #6366f1;
+}
+
+body.dark-mode .form-row input:focus,
+body.dark-mode #search:focus,
+body.dark-mode .select-row select:focus {
+  background: #23233a;
+  border-color: #a5b4fc;
+}
+
+body.dark-mode #entries li {
+  background: #18181b;
+  color: #f4f6fb;
+}
+
+body.dark-mode #entries li button {
+  color: #fff;
+}
+
+body.dark-mode .primary-btn {
+  background: linear-gradient(90deg, #6366f1 60%, #818cf8 100%);
+  color: #fff;
+}
+
+body.dark-mode .danger-btn {
+  background: #ef4444;
+  color: #fff;
+}
+
+body.dark-mode footer {
+  background: #23233a;
+  color: #a5b4fc;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 600px) {
+  header, main, .content-box {
+    padding: 1rem;
+  }
+  .section-title {
+    font-size: 1.1rem;
+  }
+  .form-row input,
+  #search,
+  .select-row select {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+  }
+  #entries li {
+    font-size: 0.97rem;
+    padding: 0.7rem 0.8rem;
+  }
+  .primary-btn, .danger-btn, .enhanced-btn {
+    font-size: 0.97rem;
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* Animation for Modal (if used) */
+#entry-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(30, 41, 59, 0.45);
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+#entry-modal.visible {
+  display: flex;
+  opacity: 1;
 }

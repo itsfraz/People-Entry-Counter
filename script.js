@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextPageButton = document.getElementById('next-page');
     const pageInfo = document.getElementById('page-info');
 
+    const fabAddEntry = document.getElementById('fab-add-entry');
+    const entryModal = document.getElementById('entry-modal');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
     let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
     const entriesPerPage = 5;
@@ -31,13 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial theme setup
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
-        document.querySelector('header').classList.add('dark-mode');
-        document.querySelector('footer').classList.add('dark-mode');
         darkModeToggle.checked = true;
     } else {
         document.body.classList.remove('dark-mode');
-        document.querySelector('header').classList.remove('dark-mode');
-        document.querySelector('footer').classList.remove('dark-mode');
         darkModeToggle.checked = false;
     }
 
@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (validateEntry(entry)) {
             addEntry(entry);
             form.reset();
+            closeModal();
             showFeedback('Entry added successfully!', 'success');
         } else {
             console.log('Validation failed:', entry);
@@ -114,48 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     generateDailyReportExcelButton.addEventListener('click', generateDailyReportExcel);
     generateMonthlyReportTextButton.addEventListener('click', generateMonthlyReportText);
     generateMonthlyReportExcelButton.addEventListener('click', generateMonthlyReportExcel);
-
-    // function generateDailyReportText() {
-    //     const today = new Date().toLocaleDateString();
-    //     const dailyEntries = entries.filter(entry => {
-    //         const entryDate = new Date(entry.entryTime).toLocaleDateString();
-    //         return entryDate === today;
-    //     });
-
-    //     if (dailyEntries.length === 0) {
-    //         showFeedback('No entries found for today.', 'error');
-    //         return;
-    //     }
-    //     console.log("Filtered Entries: ", dailyEntries);
-
-    //     const reportEntries = dailyEntries.map((entry, index) => ({
-    //         serialNo: index + 1,
-    //         name: entry.name,
-    //         vehicle: entry.vehicle,
-    //         purpose: entry.purpose,
-    //         entryTime: entry.entryTime,
-    //         exitTime: entry.exitTime || 'Not exited'
-    //     }));
-
-    //     const reportContent = reportEntries.map(entry =>
-    //         `${entry.serialNo} - ${entry.name} - ${entry.vehicle} - ${entry.purpose} - ${entry.entryTime} - ${entry.exitTime}`
-    //     ).join("\n");
-
-    //     const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
-    //     console.log("Blob created:", blob);
-
-    //     const downloadLink = document.createElement('a');
-    //     downloadLink.href = URL.createObjectURL(blob);
-    //     downloadLink.download = `daily_report_${today.replace(/\//g, '-')}.txt`;
-
-    //     console.log("Download link created:", downloadLink);
-
-    //     document.body.appendChild(downloadLink);
-    //     downloadLink.click();
-    //     document.body.removeChild(downloadLink);
-
-    //     showFeedback('Daily report generated successfully!', 'success');
-    // }
 
     function generateDailyReportText() {
         const today = new Date().toLocaleDateString();
@@ -298,13 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
         isDarkMode = darkModeToggle.checked;
         if (isDarkMode) {
             document.body.classList.add('dark-mode');
-            document.querySelector('header').classList.add('dark-mode');
-            document.querySelector('footer').classList.add('dark-mode');
             localStorage.setItem('darkMode', JSON.stringify(true));
         } else {
             document.body.classList.remove('dark-mode');
-            document.querySelector('header').classList.remove('dark-mode');
-            document.querySelector('footer').classList.remove('dark-mode');
             localStorage.setItem('darkMode', JSON.stringify(false));
         }
     });
@@ -322,6 +277,24 @@ document.addEventListener('DOMContentLoaded', () => {
             updateEntries();
         }
     });
+
+    fabAddEntry.addEventListener('click', () => {
+        entryModal.classList.add('visible');
+    });
+
+    modalCloseBtn.addEventListener('click', () => {
+        closeModal();
+    });
+
+    entryModal.addEventListener('click', (e) => {
+        if (e.target === entryModal) {
+            closeModal();
+        }
+    });
+
+    function closeModal() {
+        entryModal.classList.remove('visible');
+    }
 
     function validateEntry(entry) {
         const vehicleRegex = /^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$/;
@@ -346,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const date = new Date(datePart + ' ' + timePart);
             timeInput.value = date.toISOString().slice(0, 16);
             deleteEntry(li);
+            entryModal.classList.add('visible');
             showFeedback('Entry ready to edit.', 'info');
         }
     }
@@ -381,6 +355,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="delete">Delete</button>
                 <button class="exit" ${entry.exitTime ? 'disabled' : ''}>Exit</button>
             `;
+            // Add visible class for animation
+            li.classList.add('visible');
             entriesList.appendChild(li);
         });
 
@@ -402,21 +378,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateEntries();
 
-    let countEl = document.getElementById("count-el");
-    let saveEl = document.getElementById("save-el");
-    let count = 0;
-
-    function increment() {
-        count += 1;
-        countEl.textContent = count;
-    }
-
-    function save() {
-        let countStr = count + " - ";
-        saveEl.textContent += countStr;
-        countEl.textContent = 0;
-        count = 0;
-    }
-
-    console.log("let's count people on subway !");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('section, #entries li').forEach(el => observer.observe(el));
 });
