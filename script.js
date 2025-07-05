@@ -159,7 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ).join("\n");
     
         const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, `daily_report_${today.replace(/\//g, '-')}.txt`);
+        
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = `daily_report_${today.replace(/\//g, '-')}.txt`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
     
         showFeedback('Daily report generated successfully!', 'success');
     }
