@@ -507,30 +507,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('export-pdf').addEventListener('click', () => {
+        console.log('Export PDF button clicked.');
         if (!window.jspdf || !window.jspdf.jsPDF) {
             showFeedback('Error: PDF library not loaded. Check internet connection.', 'error');
+            console.error('jsPDF library not found on window object.', window.jspdf);
             return;
         }
+        console.log('jsPDF library loaded.');
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
         const today = new Date();
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
+        today.setHours(0, 0, 0, 0); // Set to start of today
+        console.log('Today (start of day):', today.toISOString());
 
-        const monthlyEntries = entries.filter(entry => {
+        const dailyEntries = entries.filter(entry => {
             const entryDate = new Date(entry.entryTime);
-            return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+            entryDate.setHours(0, 0, 0, 0); // Set to start of entry day
+            console.log(`Comparing entry date ${entryDate.toISOString()} with today ${today.toISOString()}`);
+            return entryDate.getTime() === today.getTime();
         });
 
-        if (monthlyEntries.length === 0) {
-            showFeedback('No entries found for the current month.', 'error');
+        console.log('Filtered daily entries for PDF:', dailyEntries);
+        if (dailyEntries.length === 0) {
+            showFeedback('No entries found for today.', 'error');
             return;
         }
 
-        doc.text('Gate Entry Report - Current Month', 10, 10);
+        doc.text('Gate Entry Report - Daily', 10, 10);
         let y = 20;
-        monthlyEntries.forEach(e => {
+        dailyEntries.forEach(e => {
             const text = `${e.entryTime} - ${e.name} - ${e.vehicle} - ${e.purpose}`;
             doc.text(text, 10, y);
             y += 10;
@@ -539,14 +545,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 y = 10;
             }
         });
-        doc.save('GateEntryReport-CurrentMonth.pdf');
+        const todayFormatted = today.toISOString().slice(0, 10);
+        doc.save(`GateEntryReport-Daily-${todayFormatted}.pdf`);
+        console.log('PDF generation and save initiated.');
     });
 
     document.getElementById('email-report').addEventListener('click', () => {
-        let body = 'Gate Entry Report:%0D%0A';
-        filteredEntries.forEach(e => {
-            body += `${e.entryTime} - ${e.name} - ${e.vehicle} - ${e.purpose}%0D%0A`;
+        const monthSelect = document.getElementById('month-select');
+        const yearSelect = document.getElementById('year-select');
+        const selectedMonth = parseInt(monthSelect.value); // 1-12
+        const selectedYear = parseInt(yearSelect.value);
+
+        const monthlyEntries = entries.filter(entry => {
+            const entryDate = new Date(entry.entryTime);
+            // getMonth() returns 0-11, so add 1 for comparison with selectedMonth
+            return (entryDate.getMonth() + 1) === selectedMonth && entryDate.getFullYear() === selectedYear;
         });
-        window.location.href = `mailto:?subject=Gate Entry Report&body=${body}`;
+
+        if (monthlyEntries.length === 0) {
+            showFeedback('No entries found for the selected month to email.', 'error');
+            return;
+        }
+
+        let body = `Gate Entry Report - ${monthSelect.options[monthSelect.selectedIndex].text} ${selectedYear}:%0D%0A`;
+        monthlyEntries.forEach(e => {
+            body += `${new Date(e.entryTime).toLocaleString()} - ${e.name} - ${e.vehicle} - ${e.purpose}%0D%0A`;
+        });
+        window.location.href = `mailto:farajm624@gmail.com=Monthly Gate Entry Report&body=${body}`;
     });
 });
