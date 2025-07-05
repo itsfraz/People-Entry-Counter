@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Script loaded and DOMContentLoaded event fired.');
     const form = document.getElementById('gateForm');
     const nameInput = document.getElementById('name');
     const vehicleInput = document.getElementById('vehicle');
@@ -28,6 +29,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCloseBtn = document.getElementById('modal-close-btn');
 
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
+    // Data migration: Convert old date formats to ISO string
+    entries = entries.map(entry => {
+        if (typeof entry.entryTime === 'string' && !entry.entryTime.endsWith('Z')) {
+            // Assuming old format was from toLocaleString(), try to parse and convert
+            const date = new Date(entry.entryTime);
+            if (!isNaN(date.getTime())) {
+                entry.entryTime = date.toISOString();
+            }
+        }
+        return entry;
+    });
+    localStorage.setItem('entries', JSON.stringify(entries)); // Save migrated data
+
     let isDarkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
     const entriesPerPage = 2;
     let currentPage = 1;
@@ -84,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             purpose: purposeInput.value === 'Other'
                 ? purposeOtherInput.value.trim().toUpperCase()
                 : purposeInput.value,
-            entryTime: entryTime.toLocaleString(),
+            entryTime: entryTime.toISOString(),
             exitTime: null
         };
         if (validateEntry(entry)) {
@@ -134,12 +148,17 @@ document.addEventListener('DOMContentLoaded', () => {
     generateMonthlyReportExcelButton.addEventListener('click', generateMonthlyReportExcel);
 
     function generateDailyReportText() {
-        const today = new Date().toLocaleDateString();
+        console.log('generateDailyReportText called.');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set to start of today
+
         const dailyEntries = entries.filter(entry => {
-            const entryDate = new Date(entry.entryTime).toLocaleDateString();
-            return entryDate === today;
+            const entryDate = new Date(entry.entryTime);
+            entryDate.setHours(0, 0, 0, 0); // Set to start of entry day
+            return entryDate.getTime() === today.getTime();
         });
     
+        console.log('Daily entries found:', dailyEntries);
         if (dailyEntries.length === 0) {
             showFeedback('No entries found for today.', 'error');
             return;
@@ -162,7 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const downloadLink = document.createElement('a');
         downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = `daily_report_${today.replace(/\//g, '-')}.txt`;
+        const todayFormatted = today.toISOString().slice(0, 10);
+        downloadLink.download = `daily_report_${todayFormatted}.txt`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
@@ -171,12 +191,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateDailyReportExcel() {
-        const today = new Date().toLocaleDateString();
+        console.log('generateDailyReportExcel called.');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set to start of today
+
         const dailyEntries = entries.filter(entry => {
-            const entryDate = new Date(entry.entryTime).toLocaleDateString();
-            return entryDate === today;
+            const entryDate = new Date(entry.entryTime);
+            entryDate.setHours(0, 0, 0, 0); // Set to start of entry day
+            return entryDate.getTime() === today.getTime();
         });
 
+        console.log('Daily entries found for Excel:', dailyEntries);
         if (dailyEntries.length === 0) {
             showFeedback('No entries found for today.', 'error');
             return;
@@ -194,7 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const worksheet = XLSX.utils.json_to_sheet(reportEntries);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Daily Report");
-        XLSX.writeFile(workbook, `daily_report_${today.replace(/\//g, '-')}.xlsx`);
+        const todayFormatted = today.toISOString().slice(0, 10);
+        XLSX.writeFile(workbook, `daily_report_${todayFormatted}.xlsx`);
         showFeedback('Daily report generated successfully!', 'success');
     }
 
@@ -338,9 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nameInput.value = entry.name;
             vehicleInput.value = entry.vehicle;
             purposeInput.value = entry.purpose;
-            const [datePart, timePart] = entry.entryTime.split(', ');
-            const date = new Date(datePart + ' ' + timePart);
-            timeInput.value = date.toISOString().slice(0, 16);
+            timeInput.value = entry.entryTime.slice(0, 16);
             deleteEntry(li);
             entryModal.classList.add('visible');
             showFeedback('Entry ready to edit.', 'info');
@@ -483,22 +507,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('export-pdf').addEventListener('click', () => {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            showFeedback('Error: PDF library not loaded. Check internet connection.', 'error');
+            return;
+        }
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text('Gate Entry Report', 10, 10);
-        let y = 20;
-        filteredEntries.forEach(e => {
-            doc.text(`${e.entryTime} - ${e.visitors.map(v => v.name).join(', ')} - ${e.purpose}`, 10, y);
-            y += 10;
-            if (y > 270) { doc.addPage(); y = 10; }
+
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        const monthlyEntries = entries.filter(entry => {
+            const entryDate = new Date(entry.entryTime);
+            return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
         });
-        doc.save('GateEntryReport.pdf');
+
+        if (monthlyEntries.length === 0) {
+            showFeedback('No entries found for the current month.', 'error');
+            return;
+        }
+
+        doc.text('Gate Entry Report - Current Month', 10, 10);
+        let y = 20;
+        monthlyEntries.forEach(e => {
+            const text = `${e.entryTime} - ${e.name} - ${e.vehicle} - ${e.purpose}`;
+            doc.text(text, 10, y);
+            y += 10;
+            if (y > 270) {
+                doc.addPage();
+                y = 10;
+            }
+        });
+        doc.save('GateEntryReport-CurrentMonth.pdf');
     });
 
     document.getElementById('email-report').addEventListener('click', () => {
         let body = 'Gate Entry Report:%0D%0A';
         filteredEntries.forEach(e => {
-            body += `${e.entryTime} - ${e.visitors.map(v => v.name).join(', ')} - ${e.purpose}%0D%0A`;
+            body += `${e.entryTime} - ${e.name} - ${e.vehicle} - ${e.purpose}%0D%0A`;
         });
         window.location.href = `mailto:?subject=Gate Entry Report&body=${body}`;
     });
